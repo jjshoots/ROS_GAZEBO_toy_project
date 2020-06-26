@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<robot>
+
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/pendulum_cart</robotNamespace>
+            <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+        </plugin>
+    </gazebo>
+
+    <gazebo reference="base_link">
+        <selfCollide>true</selfCollide>
+        <material>Gazebo/Red</material>
+    </gazebo>
+
+    <gazebo reference="pendulum_joint">
+        <selfCollide>true</selfCollide>
+        <material>Gazebo/Red</material>
+    </gazebo>
+
+    <gazebo reference="first_pendulum">
+        <selfCollide>true</selfCollide>
+        <material>Gazebo/Black</material>
+    </gazebo>
+    
+    <gazebo reference="second_pendulum">
+        <selfCollide>true</selfCollide>
+        <material>Gazebo/Red</material>
+    </gazebo>
+
+    <gazebo reference="front_left_wheel">
+        <selfCollide>true</selfCollide>
+        <material>Gazebo/Orange</material>
+    </gazebo>
+
+    <gazebo reference="front_right_wheel">
+        <selfCollide>true</selfCollide>
+        <material>Gazebo/Orange</material>
+    </gazebo>
+
+    <gazebo reference="back_left_wheel">
+        <selfCollide>true</selfCollide>
+        <material>Gazebo/Orange</material>
+    </gazebo>
+
+    <gazebo reference="back_right_wheel">
+        <selfCollide>true</selfCollide>
+        <material>Gazebo/Orange</material>
+    </gazebo>
+</robot>

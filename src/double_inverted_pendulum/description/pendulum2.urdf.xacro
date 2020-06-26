@@ -1,0 +1,234 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="pendulum_cart">
+
+    <xacro:include filename="$(find double_inverted_pendulum)/description/materials.xacro" />
+    <xacro:include filename="$(find double_inverted_pendulum)/description/pendulum2.gazebo" />
+
+    <!-- #region XACRO_MACROS -->
+
+    <!-- #region CONSTANTS -->
+    <xacro:property name="boxheight" value="0.1" />
+    <xacro:property name="pendulumlength" value="0.5" />
+    <xacro:property name="pendulummass" value="1" />
+    <xacro:property name="pendulumwidth" value="0.05" /> 
+    <xacro:property name="pitchlimit" value="0" /> 
+    <xacro:property name="pendulumdamping" value="0.0" /> 
+    <xacro:property name="pendulumfriction" value="0.10" /> 
+    <!-- #endregion -->
+
+    <!-- #region MAKE_BOX -->
+    <xacro:macro name="make_box" params="length width height mass material originxyz originrpy">
+        <visual>
+            <origin rpy="${originrpy}" xyz="${originxyz}"/>
+            <geometry>
+                <box size="${length} ${width} ${height}"/>
+            </geometry>
+            <material name="${material}"/>
+        </visual>
+        <collision>
+            <origin rpy="${originrpy}" xyz="${originxyz}"/>
+            <geometry>
+                <box size="${length} ${width} ${height}"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="${mass}"/>
+            <inertia
+                ixx="${1/12 * mass * (height*height + length*length)}"
+                iyy="${1/12 * mass * (width*width + length*length)}"
+                izz="${1/12 * mass * (width*width + height*height)}"
+                ixy="0"
+                ixz="0"
+                iyz="0"
+            />
+        </inertial>
+    </xacro:macro>
+    <!-- #endregion -->
+
+    <!-- #region MAKE_CYLINDER -->
+    <xacro:macro name="make_cylinder" params="length radius mass material originxyz originrpy">
+        <visual>
+            <origin rpy="${originrpy}" xyz="${originxyz}"/>
+            <geometry>
+                <cylinder length="${length}" radius="${radius}"/>
+            </geometry>
+            <material name="${material}"/>
+        </visual>
+        <collision>
+            <origin xyz="${originxyz}" rpy="${originrpy}"/>
+            <geometry>
+                <cylinder length="${length}" radius="${length}"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="${mass}"/>
+            <inertia
+                ixx="${1/12 * mass * (3*radius*radius + length*length)}"
+                iyy="${1/12 * mass * (3*radius*radius + length*length)}"
+                izz="${1/2 * mass * radius*radius}"
+                ixy="0"
+                ixz="0"
+                iyz="0"
+            />
+        </inertial>
+    </xacro:macro>
+    <!-- #endregion -->
+
+    <!-- #endregion -->
+
+    <!-- ROBOT BEGINS HERE -->
+    <!-- ROBOT BEGINS HERE -->
+    <!-- ROBOT BEGINS HERE -->
+    
+    <!-- #region BASE -->
+    <link name="base_link">
+        <xacro:make_box length="0.5" width="0.5" height="${boxheight}" mass="1000" material="red" originxyz="0 0 0" originrpy="0 0 0"/>
+    </link>
+    <!-- #endregion -->
+    
+    <!-- #region PENDULUM_JOINT -->
+    <link name="pendulum_joint">
+        <xacro:make_box length="${pendulumwidth}" width="${pendulumwidth}" height="${pendulumwidth*2}" mass="10" material="red" originxyz="0 0 ${-pendulumwidth/2}" originrpy="0 0 0"/>
+    </link>
+
+    <joint name="base_to_pendulum_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="pendulum_joint"/>
+        <!-- joint of child is xyz away from parent -->
+        <origin xyz="0 0 ${1.5*pendulumwidth + boxheight/2}"/>
+    </joint>
+    <!-- #endregion -->
+
+    <!-- #region FIRST_PENDULUM -->
+    <link name="first_pendulum">
+        <xacro:make_box length="${pendulumwidth}" width="${pendulumwidth}" height="${pendulumlength}" mass="2" material="black" originxyz="0 0 ${pendulumlength/2 - pendulumwidth/2}" originrpy="0 0 0"/>
+    </link>
+
+    <joint name="pendulum_joint_to_first_pendulum" type="continuous">
+        <parent link="pendulum_joint"/>
+        <child link="first_pendulum"/>
+        <!-- joint of child is xyz away from parent -->
+        <origin xyz="${pendulumwidth + 0.003} 0 0"/>
+        <axis xyz="1 0 0"/>
+        <dynamics friction="${pendulumfriction}" damping="${pendulumdamping}"/>
+    </joint>
+    <!-- #endregion -->
+
+    <!-- #region SECOND_PENDULUM -->
+    <link name="second_pendulum">
+        <xacro:make_box length="${pendulumwidth}" width="${pendulumwidth}" height="${pendulumlength}" mass="2" material="red" originxyz="0 0 ${pendulumlength/2 - pendulumwidth/2}" originrpy="0 0 0"/>
+    </link>
+
+    <joint name="first_pendulum_to_second_pendulum" type="continuous">
+        <parent link="first_pendulum"/>
+        <child link="second_pendulum"/>
+        <!-- joint of child is xyz away from parent -->
+        <origin xyz="${-pendulumwidth - 0.003} 0 ${pendulumlength - pendulumwidth}"/>
+        <axis xyz="1 0 0"/>
+        <dynamics friction="${pendulumfriction}" damping="${pendulumdamping}"/>
+    </joint>
+    <!-- #endregion -->
+
+    <!-- #region WHEELS -->
+    <!-- #region FRONT_LEFT_WHEEL -->
+    <link name="front_left_wheel">
+        <xacro:make_cylinder length="0.1" radius="0.1" mass="0.3" material="orange" originxyz="0.051 0 0" originrpy="0 1.570796327 0"/>
+    </link>
+
+    <joint name="base_to_front_left_wheel" type="continuous">
+        <parent link="base_link"/>
+        <child link="front_left_wheel"/>
+        <!-- joint of child is xyz away from parent -->
+        <origin xyz="0.25 0.25 ${-boxheight/2}"/>
+        <axis xyz="1 0 0"/>
+    </joint>
+
+    <transmission name="FLWheel">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="base_to_front_left_wheel">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="FLWheel">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <!-- #endregion -->
+    
+    <!-- #region FRONT_RIGHT_WHEEL -->
+    <link name="front_right_wheel">
+        <xacro:make_cylinder length="0.1" radius="0.1" mass="0.3" material="orange" originxyz="0.051 0 0" originrpy="0 -1.570796327 0"/>
+    </link>
+
+    <joint name="base_to_front_right_wheel" type="continuous">
+        <parent link="base_link"/>
+        <child link="front_right_wheel"/>
+        <!-- joint of child is xyz away from parent -->
+        <origin xyz="0.25 -0.25 ${-boxheight/2}"/>
+        <axis xyz="1 0 0"/>
+    </joint>
+
+    <transmission name="FRWheel">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="base_to_front_right_wheel">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="FRWheel">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <!-- #endregion -->
+
+    <!-- #region BACK_LEFT_WHEEL -->
+    <link name="back_left_wheel">
+        <xacro:make_cylinder length="0.1" radius="0.1" mass="0.3" material="orange" originxyz="-0.051 0 0" originrpy="0 1.570796327 0"/>
+    </link>
+
+    <joint name="base_to_back_left_wheel" type="continuous">
+        <parent link="base_link"/>
+        <child link="back_left_wheel"/>
+        <!-- joint of child is xyz away from parent -->
+        <origin xyz="-0.25 0.25 ${-boxheight/2}"/>
+        <axis xyz="1 0 0"/>
+    </joint>
+
+    <transmission name="BLWheel">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="base_to_back_left_wheel">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="BLWheel">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <!-- #endregion -->
+
+    <!-- #region BACK_RIGHT_WHEEL -->
+    <link name="back_right_wheel">
+        <xacro:make_cylinder length="0.1" radius="0.1" mass="0.3" material="orange" originxyz="-0.051 0 0" originrpy="0 1.570796327 0"/>
+    </link>
+
+    <joint name="base_to_back_right_wheel" type="continuous">
+        <parent link="base_link"/>
+        <child link="back_right_wheel"/>
+        <!-- joint of child is xyz away from parent -->
+        <origin xyz="-0.25 -0.25 ${-boxheight/2}"/>
+        <axis xyz="1 0 0"/>
+    </joint>
+
+    <transmission name="BRWheel">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="base_to_back_right_wheel">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="BRWheel">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <!-- #endregion -->
+    <!-- #endregion -->
+
+</robot>

@@ -1,0 +1,8 @@
+prefix=/home/jet/Desktop/tutorials/install
+
+Name: double_inverted_pendulum
+Description: Description of double_inverted_pendulum
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
