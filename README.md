@@ -10,22 +10,22 @@ Tested on Ubuntu 20.04 LTS, ROS Noetic, Gazebo 9.
   1. Clone the project into a directory on your local drive.
   2. Navigate to the drive and run the following commands:
   ```
-  	rm -rf /build /devel
-  	catkin_make
+  rm -rf /build /devel
+  catkin_make
   ```
 
 ## Running the Simulation
   1. Source the project setup:
   ```
-  	source devel/setup.bash
+  source devel/setup.bash
   ```
   2. Try running the following command to start the simulation:
   ```
-  	roslaunch double_inverted_pendulum gazebo1.launch
+  roslaunch double_inverted_pendulum gazebo1.launch
   ```
   If it doesn't work, do:
   ```
-  	cd src/double_inverted_pendulum/launch
-  	roslaunch double_inverted_pendulum gazebo1.launch
+  cd src/double_inverted_pendulum/launch
+  roslaunch double_inverted_pendulum gazebo1.launch
   ```
   The simulation should now start and you should see the pendulum cart in the scene.
