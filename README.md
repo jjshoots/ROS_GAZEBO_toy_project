@@ -19,15 +19,15 @@ Tested on Ubuntu 20.04 LTS, ROS Noetic, Gazebo 9.
 
 ## Running the Simulation
   1. Source the project setup:
-  ```
+  ```bash
   source devel/setup.bash
   ```
   2. Try running the following command to start the simulation:
-  ```
+  ```bash
   roslaunch double_inverted_pendulum gazebo1.launch
   ```
   If it doesn't work, do:
-  ```
+  ```bash
   cd src/double_inverted_pendulum/launch
   roslaunch double_inverted_pendulum gazebo1.launch
   ```
