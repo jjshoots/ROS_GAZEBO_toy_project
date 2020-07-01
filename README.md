@@ -9,7 +9,7 @@ Tested on Ubuntu 20.04 LTS, ROS Noetic, Gazebo 9.
 ## Building from Source
   1. Clone the project into a directory on your local drive.
   2. Navigate to the drive and run the following commands, assuming you're using ROS Melodic:
-  ```shell
+  ```bash
   source /opt/ros/melodic/setup.bash
   rm src/CMakeLists.txt
   rm -rf build/ devel/
