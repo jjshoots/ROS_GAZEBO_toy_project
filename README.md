@@ -1,4 +1,4 @@
-# DOUBLE INVERTED PENDULUM PROJECT
+# ROS GAZEBO Toy pROJECT
 ROS GAZEBO double inverted pendulum for RL toy project.
 Tested on Ubuntu 20.04 LTS, ROS Noetic, Gazebo 9.
 
