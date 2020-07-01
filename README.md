@@ -5,6 +5,10 @@ Tested on Ubuntu 20.04 LTS, ROS Noetic, Gazebo 9.
 
 ## Prerequisites
   - If using Ubuntu 18, install ROS desktop full from: [http://wiki.ros.org/melodic/Installation/Ubuntu]
+  - You also need build-essential if you haven't already installed it:
+  ```bash
+  sudo apt install build-essential
+  ```
 
 ## Building from Source
   1. Clone the project into a directory on your local drive.
