@@ -1,7 +1,7 @@
 <launch>
     <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
-      <arg name="paused" value="true"/>
+      <arg name="paused" value="false"/>
       <arg name="use_sim_time" value="true"/>
       <arg name="gui" value="true"/>
       <arg name="headless" value="false"/>
@@ -19,7 +19,11 @@
 
   <!-- load the controllers -->
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
-    output="screen" ns="/rrbot" args="joint1_position_controller base_to_front_left_wheel_position_controller base_to_front_right_wheel_position_controller base_to_front_right_wheel_position_controller base_to_back_right_wheel_position_controller"/>
+    output="screen" ns="/pendulum_cart" args="
+    FLwheel_controller
+    FRwheel_controller
+    BLwheel_controller
+    BRwheel_controller"/>
 
   <!-- convert joint states to TF transforms for rviz, etc -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"

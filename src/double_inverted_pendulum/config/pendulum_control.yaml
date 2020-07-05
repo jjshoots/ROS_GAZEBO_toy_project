@@ -4,24 +4,23 @@ pendulum_cart:
     type: joint_state_controller/JointStateController
     publish_rate: 50  
 
-  # Position Controllers ---------------------------------------
-  base_to_front_left_wheel_position_controller:
-    type: effort_controllers/JointPositionController
+  # Controllers ---------------------------------------
+  FLwheel_controller:
+    type: effort_controllers/JointVelocityController
     joint: base_to_front_left_wheel
-    pid: {p: 100.0, i: 0.01, d: 10.0}
+    pid: {p: 10.0, i: 0.0, d: 0.0}
   
-  base_to_front_right_wheel_position_controller:
-    type: effort_controllers/JointPositionController
+  FRwheel_controller:
+    type: effort_controllers/JointVelocityController
     joint: base_to_front_right_wheel
-    pid: {p: 100.0, i: 0.01, d: 10.0}
+    pid: {p: 10.0, i: 0.0, d: 0.0}
 
-  base_to_back_left_wheel_position_controller:
-    type: effort_controllers/JointPositionController
+  BLwheel_controller:
+    type: effort_controllers/JointVelocityController
     joint: base_to_back_left_wheel
-    pid: {p: 100.0, i: 0.01, d: 10.0}
+    pid: {p: 10.0, i: 0.0, d: 0.0}
 
-  base_to_back_right_wheel_position_controller:
-    type: effort_controllers/JointPositionController
+  BRwheel_controller:
+    type: effort_controllers/JointVelocityController
     joint: base_to_back_right_wheel
-    pid: {p: 100.0, i: 0.01, d: 10.0}
-  
+    pid: {p: 10.0, i: 0.0, d: 0.0}
