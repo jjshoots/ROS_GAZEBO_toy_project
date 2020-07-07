@@ -12,7 +12,7 @@ Tested on Ubuntu 20.04 LTS, ROS Noetic, Gazebo 9.
 
 ## Building from Source
   1. Clone the project into a directory on your local drive.
-  2. Navigate to the drive and run the following commands, assuming you're using ROS Melodic:
+  2. Navigate to the ROS_GAZEBO_toy_project directory (if you haven't renamed it) and run the following commands, assuming you're using ROS Melodic:
   ```bash
   source /opt/ros/melodic/setup.bash
   rm src/CMakeLists.txt
