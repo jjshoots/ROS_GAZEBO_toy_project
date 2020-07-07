@@ -4,7 +4,7 @@ import math
 from std_msgs.msg import Float64
 
 rospy.init_node("controller")
-r = rospy.Rate(100) # 10hz
+r = rospy.Rate(100) # 100hz control rate
 
 FLwheel_publisher = rospy.Publisher('/pendulum_cart/FLwheel_controller/command', Float64, queue_size=1)
 FRwheel_publisher = rospy.Publisher('/pendulum_cart/FRwheel_controller/command', Float64, queue_size=1)
