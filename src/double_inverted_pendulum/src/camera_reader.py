@@ -7,7 +7,7 @@ from cv_bridge import CvBridge
 class image_converter:
     def __init__(self):
         self.bridge = CvBridge()
-        self.ros_img_sub = rospy.Subscriber("/pendulum_cart/camera1/image_raw", Image, self.camera_callback)
+        self.ros_img_sub = rospy.Subscriber("/pendulum/camera1/image_raw", Image, self.camera_callback)
 
     def camera_callback(self, data):
         cv_img = self.bridge.imgmsg_to_cv2(data, "bgr8")
