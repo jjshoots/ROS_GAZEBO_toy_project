@@ -7,7 +7,7 @@ second_pendulum_state = JointState()
 
 cart_controller = cart_controller("controller_commander", 100)
 
-if True:
+while True:
     cart_controller.actuate_wheels(0)
 
     first_pendulum_state = cart_controller.get_joint_state("pendulum_joint_to_first_pendulum")
