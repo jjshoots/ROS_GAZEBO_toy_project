@@ -94,6 +94,26 @@
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
     </transmission>
+
+    <transmission name="FirstPendulum">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="pendulum_joint_to_first_pendulum">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="FirstPendulum">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="SecondPendulum">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="first_pendulum_to_second_pendulum">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="SecondPendulum">
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
     <!-- #endregion -->
 
     <!-- #region CAMERA -->
