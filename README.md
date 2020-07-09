@@ -41,3 +41,14 @@ Tested on Ubuntu 20.04 LTS, ROS Noetic, Gazebo 9.
   roslaunch double_inverted_pendulum gazebo1.launch
   ```
   The simulation should now start and you should see the pendulum cart in the scene.
+
+## I/O System
+  1. Source the project setup:
+  ```bash
+  source devel/setup.bash
+  ```
+  2. The I/O example file is located in `src/double_inverted_pendulum/src/main.py`
+  3. Run the `main.py` file with:
+  ```bash
+  rosrun double_inverted_pendulum main.py
+  ```
