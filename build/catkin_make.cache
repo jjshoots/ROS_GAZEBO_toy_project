@@ -1,2 +1,2 @@
-double_inverted_pendulum:tutorial1
+double_inverted_pendulum
 -DCATKIN_DEVEL_PREFIX=/home/jet/Desktop/tutorials/devel -DCMAKE_INSTALL_PREFIX=/home/jet/Desktop/tutorials/install -G Unix Makefiles

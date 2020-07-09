@@ -132,7 +132,6 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/home/jet/Desktop/tutorials/build/gtest/cmake_install.cmake")
   include("/home/jet/Desktop/tutorials/build/double_inverted_pendulum/cmake_install.cmake")
-  include("/home/jet/Desktop/tutorials/build/tutorial1/cmake_install.cmake")
 
 endif()
 

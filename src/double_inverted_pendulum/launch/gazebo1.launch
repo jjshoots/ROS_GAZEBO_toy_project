@@ -18,12 +18,18 @@
   <rosparam file="$(find double_inverted_pendulum)/config/pendulum_control.yaml" command="load"/>
 
   <!-- load the controllers -->
-  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
-    output="screen" ns="/pendulum_cart" args="
+  <node name="controller" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" ns="/pendulum" args="
     FLwheel_controller
     FRwheel_controller
     BLwheel_controller
-    BRwheel_controller"/>
+    BRwheel_controller
+    joint_state_controller"/>
+
+  <!-- merge joint states and publish as /joint_states -->
+  <!-- <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="use_gui" value="false"/>
+  </node> -->
 
   <!-- convert joint states to TF transforms for rviz, etc -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"

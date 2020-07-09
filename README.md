@@ -9,6 +9,11 @@ Tested on Ubuntu 20.04 LTS, ROS Noetic, Gazebo 9.
   ```bash
   sudo apt install build-essential
   ```
+  - Additionally, this project uses ros effort controllers, install it with:
+  ```bash
+  sudo apt install ros-melodic-effort-controllers
+  ```
+  If you happen to not be using ROS Melodic, just replace `melodic` with your distro of choice. 
 
 ## Building from Source
   1. Clone the project into a directory on your local drive.

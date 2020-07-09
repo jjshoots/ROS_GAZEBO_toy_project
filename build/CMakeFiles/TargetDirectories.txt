@@ -110,10 +110,3 @@
 /home/jet/Desktop/tutorials/build/double_inverted_pendulum/CMakeFiles/geometry_msgs_generate_messages_nodejs.dir
 /home/jet/Desktop/tutorials/build/double_inverted_pendulum/CMakeFiles/dynamic_reconfigure_generate_messages_eus.dir
 /home/jet/Desktop/tutorials/build/double_inverted_pendulum/CMakeFiles/dynamic_reconfigure_gencfg.dir
-/home/jet/Desktop/tutorials/build/tutorial1/CMakeFiles/install/strip.dir
-/home/jet/Desktop/tutorials/build/tutorial1/CMakeFiles/install/local.dir
-/home/jet/Desktop/tutorials/build/tutorial1/CMakeFiles/install.dir
-/home/jet/Desktop/tutorials/build/tutorial1/CMakeFiles/list_install_components.dir
-/home/jet/Desktop/tutorials/build/tutorial1/CMakeFiles/rebuild_cache.dir
-/home/jet/Desktop/tutorials/build/tutorial1/CMakeFiles/edit_cache.dir
-/home/jet/Desktop/tutorials/build/tutorial1/CMakeFiles/test.dir

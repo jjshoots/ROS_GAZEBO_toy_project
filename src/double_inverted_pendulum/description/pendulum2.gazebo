@@ -3,7 +3,7 @@
 
     <gazebo>
         <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-            <robotNamespace>/pendulum_cart</robotNamespace>
+            <robotNamespace>/pendulum</robotNamespace>
         </plugin>
     </gazebo>
 
@@ -123,7 +123,7 @@
             <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
                 <alwaysOn>true</alwaysOn>
                 <updateRate>0.0</updateRate>
-                <cameraName>pendulum_cart/camera1</cameraName>
+                <cameraName>pendulum/camera1</cameraName>
                 <imageTopicName>image_raw</imageTopicName>
                 <cameraInfoTopicName>camera_info</cameraInfoTopicName>
                 <frameName>camera_link_optical</frameName>
