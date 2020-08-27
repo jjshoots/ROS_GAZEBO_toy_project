@@ -21,6 +21,6 @@ while True:
 
     time.sleep(10)
 
-    reset()
+    cart_controller.reset_simulation()
 
 

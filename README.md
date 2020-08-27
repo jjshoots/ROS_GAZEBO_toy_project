@@ -52,3 +52,31 @@ Tested on Ubuntu 20.04 LTS, ROS Noetic, Gazebo 9.
   ```bash
   rosrun double_inverted_pendulum main.py
   ```
+
+  ## Usage (in main.py)
+  1. Cart controller
+  ```python
+  from cart_controller import cart_controller
+  ```
+  2. To get available joint state names
+  ```python 
+  cart_controller_object.get_joint_names()
+  ```
+  3. To access joint states
+  ```python
+  cart_controller_object.get_joint_state(joint_name)
+
+  ```
+  4. Position and velocity date from joint states
+  ```python
+  joint_state_data.velocity
+  joint_state_date.position
+  ```
+  5. To actuate wheels
+  ```python
+  cart_controller_object.actuate_wheels(wheel_speed)
+  ```
+  Note that you're not actually inputing a wheel speed, you're inputing a setpoint for the wheel PID controllers to reach. PID values can be accessed in /src/double_inverted_pendulum/config/pendulum_control.yaml
+  6. To reset simulation
+  ```
+  cart_controller_object.reset_simulation()
