@@ -1,4 +1,4 @@
-prefix=/home/jet/Desktop/tutorials/install
+prefix=/home/jet/Desktop/ROS_RL_experiment/install
 
 Name: double_inverted_pendulum
 Description: Description of double_inverted_pendulum

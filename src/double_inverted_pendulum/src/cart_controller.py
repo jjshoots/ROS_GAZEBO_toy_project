@@ -14,6 +14,9 @@ class cart_controller:
         rospy.init_node(node_name)
         self.r = rospy.Rate(node_rate)
 
+        rospy.wait_for_service('/gazebo/reset_simulation')
+        self.reset = rospy.ServiceProxy('/gazebo/reset_simulation', Empty)
+
         self.link_state_subscriber = rospy.Subscriber("/pendulum/joint_states", JointState, self.read_states)
         
         self.FLwheel_publisher = rospy.Publisher('/pendulum/FLwheel_controller/command', Float64, queue_size=1)
@@ -63,3 +66,5 @@ class cart_controller:
         else:
             raise Exception("Can't access joint: " + joint_name)
 
+    def reset_simulation(self):
+        self.reset()

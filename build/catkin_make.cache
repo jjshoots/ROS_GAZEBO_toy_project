@@ -1,2 +1,2 @@
 double_inverted_pendulum
--DCATKIN_DEVEL_PREFIX=/home/jet/Desktop/tutorials/devel -DCMAKE_INSTALL_PREFIX=/home/jet/Desktop/tutorials/install -G Unix Makefiles
+-DCATKIN_DEVEL_PREFIX=/home/jet/Desktop/ROS_RL_experiment/devel -DCMAKE_INSTALL_PREFIX=/home/jet/Desktop/ROS_RL_experiment/install -G Unix Makefiles

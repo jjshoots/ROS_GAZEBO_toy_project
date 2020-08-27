@@ -67,14 +67,14 @@ set(double_inverted_pendulum_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("FALSE" STREQUAL "TRUE")
-  set(double_inverted_pendulum_SOURCE_PREFIX /home/jet/Desktop/tutorials/src/double_inverted_pendulum)
-  set(double_inverted_pendulum_DEVEL_PREFIX /home/jet/Desktop/tutorials/devel)
+  set(double_inverted_pendulum_SOURCE_PREFIX /home/jet/Desktop/ROS_RL_experiment/src/double_inverted_pendulum)
+  set(double_inverted_pendulum_DEVEL_PREFIX /home/jet/Desktop/ROS_RL_experiment/devel)
   set(double_inverted_pendulum_INSTALL_PREFIX "")
   set(double_inverted_pendulum_PREFIX ${double_inverted_pendulum_DEVEL_PREFIX})
 else()
   set(double_inverted_pendulum_SOURCE_PREFIX "")
   set(double_inverted_pendulum_DEVEL_PREFIX "")
-  set(double_inverted_pendulum_INSTALL_PREFIX /home/jet/Desktop/tutorials/install)
+  set(double_inverted_pendulum_INSTALL_PREFIX /home/jet/Desktop/ROS_RL_experiment/install)
   set(double_inverted_pendulum_PREFIX ${double_inverted_pendulum_INSTALL_PREFIX})
 endif()
 
@@ -154,7 +154,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /home/jet/Desktop/tutorials/install/lib;/home/jet/Desktop/tutorials/devel/lib;/opt/ros/noetic/lib)
+    foreach(path /home/jet/Desktop/ROS_RL_experiment/install/lib;/home/jet/Desktop/ROS_RL_experiment/devel/lib;/opt/ros/noetic/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
