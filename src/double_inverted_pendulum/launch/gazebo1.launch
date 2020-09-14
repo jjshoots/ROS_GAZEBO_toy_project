@@ -25,10 +25,12 @@
     BLwheel_controller
     BRwheel_controller
     joint_state_controller"/>
+    <!-- ^^^ at the moment, joint_satte_controller does not exist, refer to yaml in config/ -->
 
+  
   <!-- convert joint states to TF transforms for rviz, etc -->
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+  <!-- <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
     respawn="false" output="screen">
     <remap from="/joint_states" to="/pendulum/joint_states" />
-  </node>
+  </node> -->
 </launch>
