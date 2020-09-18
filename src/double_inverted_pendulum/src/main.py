@@ -1,38 +1,43 @@
 #!/usr/bin/env python3
+import time
+import os
+import numpy as np
+
 import rospy
 from sensor_msgs.msg import JointState
 from gazebo_msgs.msg import ModelStates
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from torch import optim
+
 from cart_controller import cart_controller
+from actor_critic import actor_critic
 
-first_pendulum_state = JointState()
-second_pendulum_state = JointState()
-
-base_state = ModelStates()
-
-cart_controller = cart_controller("controller_commander", 10)
-
+# init cart controller
+cart_controller = cart_controller("controller_commander", node_rate=100)
 cart_controller.reset_simulation()
+
+# init DL agent
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+print('Using ', device)
+AC = actor_critic(device=device).to(device)
 
 while True:
     cart_controller.actuate_wheels(0)
 
-    # get the pendulum angular states
-    # pendulum states, dtype = sensor_msgs/JointState
-    first_pendulum_state = cart_controller.get_joint_state("pendulum_joint_to_first_pendulum")
-    second_pendulum_state = cart_controller.get_joint_state("first_pendulum_to_second_pendulum")
+    cart_states = cart_controller.get_state_vector()
 
-    # get the model linear states
-    # model state, dtype = gazebo_msgs/ModelStates
-    base_state = cart_controller.get_model_state("my_robot")
+    AC.forward(cart_states)
 
     # if the pendulum goes out of bounds, reset sim
-    if(abs(base_state.pose.position.y) > 10
-    or abs(first_pendulum_state.position) > 0.2
-    or abs(second_pendulum_state.position) > 0.2):
+    if(abs(cart_states[5]) > 10
+    or abs(cart_states[1]) > 1.5
+    or abs(cart_states[3]) > 1.5):
         cart_controller.reset_simulation()
-        pass
+
+    exit()
 
     cart_controller.throttle_Hz()
-
-    # print("Script is still ok.")
 

@@ -4,21 +4,28 @@ from std_msgs.msg import Float64
 from std_srvs.srv import Empty
 from sensor_msgs.msg import JointState
 from gazebo_msgs.msg import ModelStates
+
 import time
+import numpy as np
 
 class cart_controller:
 
-    have_checked_joint_index = False
-    have_checked_model_index = False
-    
-    # this is a dictionary of model_name -> model index, or joint_name -> joint_index
-    joint_dictionary = dict()
-    model_dictionary = dict()
-
-    joint_state = JointState()
-    model_state = ModelStates()
-
     def __init__(self, node_name, node_rate):
+        # initialize variables
+        self.__have_checked_joint_index__ = False
+        self.__have_checked_model_index__ = False
+        
+        # this is a dictionary of model_name -> model index, or joint_name -> joint_index
+        self.__joint_dictionary__ = dict()
+        self.__model_dictionary__ = dict()
+
+        self.__joint_state__ = JointState()
+        self.__model_state__ = ModelStates()
+
+        self.__state_vector__ = []   
+
+        # INIT STARTS HERE
+
         # start node
         rospy.init_node(node_name)
         self.r = rospy.Rate(node_rate, reset=True)
@@ -38,7 +45,7 @@ class cart_controller:
         self.BRwheel_publisher = rospy.Publisher('/pendulum/BRwheel_controller/command', Float64, queue_size=1)
 
         # don't init anything else when the robot is not available yet
-        while len(self.joint_state.name) == 0 or len(self.model_state.name) == 0:
+        while len(self.__joint_state__.name) == 0 or len(self.__model_state__.name) == 0:
             pass
 
     # caller to run the loop at a fixed node_rate
@@ -59,27 +66,27 @@ class cart_controller:
 
     # read the joint states, this function is called by the subscriber node
     def read_joint_states(self, data):
-        self.joint_state = data
+        self.__joint_state__ = data
 
-        if not self.have_checked_joint_index:
+        if not self.__have_checked_joint_index__:
             for index, name in enumerate(data.name):
-                self.joint_dictionary[name] = index
+                self.__joint_dictionary__[name] = index
                 
-            self.have_checked_joint_index = True
+            self.__have_checked_joint_index__ = True
 
     def get_joint_names(self):
-        return self.joint_dictionary.keys()
+        return self.__joint_dictionary__.keys()
 
     def get_joint_state(self, joint_name):
         selected_joint = JointState()
 
-        if joint_name in self.joint_dictionary:
-            index = self.joint_dictionary[joint_name]
+        if joint_name in self.__joint_dictionary__:
+            index = self.__joint_dictionary__[joint_name]
 
-            selected_joint.header = self.joint_state.header
+            selected_joint.header = self.__joint_state__.header
             selected_joint.name = joint_name
-            selected_joint.position = self.joint_state.position[index]
-            selected_joint.velocity = self.joint_state.velocity[index]
+            selected_joint.position = self.__joint_state__.position[index]
+            selected_joint.velocity = self.__joint_state__.velocity[index]
 
             return selected_joint
         else:
@@ -89,31 +96,57 @@ class cart_controller:
 
     # read the model states, this function is called by the subscriber node
     def read_model_states(self, data):
-        self.model_state = data
+        self.__model_state__ = data
 
-        if not self.have_checked_model_index:
+        if not self.__have_checked_model_index__:
             for index, name in enumerate(data.name):
-                self.model_dictionary[name] = index
+                self.__model_dictionary__[name] = index
                 
             self.have_checked_index = True
 
     def get_model_names(self):
-        return self.model_dictionary.keys()
+        return self.__model_dictionary__.keys()
 
     def get_model_state(self, model_name):
         selected_model = ModelStates()
 
-        if model_name in self.model_dictionary:
-            index = self.model_dictionary[model_name]
+        if model_name in self.__model_dictionary__:
+            index = self.__model_dictionary__[model_name]
 
             selected_model.name = model_name
-            selected_model.pose = self.model_state.pose[index]
-            selected_model.twist = self.model_state.twist[index]
+            selected_model.pose = self.__model_state__.pose[index]
+            selected_model.twist = self.__model_state__.twist[index]
 
             return selected_model
         else:
             raise Exception("Can't access model: " + model_name)
 
+
+    # get state of everything as a state vector
+    def get_state_vector(self):
+        self.__state_vector__ = []   
+
+        # pendulum states, dtype = sensor_msgs/JointState
+        self.__state_vector__.append(self.get_joint_state("pendulum_joint_to_first_pendulum").position)
+        self.__state_vector__.append(self.get_joint_state("pendulum_joint_to_first_pendulum").velocity)
+        self.__state_vector__.append(self.get_joint_state("first_pendulum_to_second_pendulum").position)
+        self.__state_vector__.append(self.get_joint_state("first_pendulum_to_second_pendulum").velocity)
+        
+        # model state, dtype = gazebo_msgs/ModelStates
+        self.__state_vector__.append(self.get_model_state("my_robot").pose.position.y)
+        self.__state_vector__.append(self.get_model_state("my_robot").twist.linear.y)
+
+        self.__state_vector__ = np.array(self.__state_vector__)
+
+        return self.__state_vector__
+
+    # returns the instantaneous reward of being in a state
+    def reward(self):
+        # value function used is absolute of states multiplied by scaler
+        raw_values = np.absolute(self.__state_vector__)
+        scaler = np.array([1, 1, 1, 1, 1, 1])
+
+        return np.dot(raw_values, scaler)
 
     # reset simulation caller
     def reset_simulation(self):
