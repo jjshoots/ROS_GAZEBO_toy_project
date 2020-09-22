@@ -13,7 +13,7 @@
     <xacro:property name="pendulumwidth" value="0.05" /> 
     <xacro:property name="pitchlimit" value="0" /> 
     <xacro:property name="pendulumdamping" value="0.0" /> 
-    <xacro:property name="pendulumfriction" value="0.30" /> 
+    <xacro:property name="pendulumfriction" value="0.50" /> 
     <xacro:property name="camerasize" value="0.10" /> 
     <!-- #endregion -->
 
@@ -126,7 +126,7 @@
         <!-- joint of child is xyz away from parent -->
         <origin xyz="${-pendulumwidth - 0.003} 0 ${pendulumlength - pendulumwidth}"/>
         <axis xyz="1 0 0"/>
-        <dynamics friction="${pendulumfriction}" damping="${pendulumdamping}"/>
+        <dynamics friction="1000" damping="${pendulumdamping}"/>
     </joint>
     <!-- #endregion -->
 

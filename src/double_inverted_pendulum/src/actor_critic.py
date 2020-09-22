@@ -23,12 +23,12 @@ class actor_critic(nn.Module):
         self.gamma = gamma
 
         # network definitions
-        self.general_L1 = nn.Linear(6, 128)
+        self.general_L1 = nn.Linear(6, 32)
 
-        self.action_L1 = nn.Linear(128, 64)
-        self.action_L2 = nn.Linear(64, 21)
+        self.action_L1 = nn.Linear(32, 64)
+        self.action_L2 = nn.Linear(64, 15)
 
-        self.value_L1 = nn.Linear(128, 1)
+        self.value_L1 = nn.Linear(32, 1)
         
         # optimizer
         self.optimizer = optim.Adam(self.parameters(), lr=alpha)

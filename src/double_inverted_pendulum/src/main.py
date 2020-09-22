@@ -31,7 +31,7 @@ if os.path.isfile(PATH):
     AC.load_state_dict(torch.load(PATH))
 
 
-num_episodes = 10000
+num_episodes = 100000
 
 for i in range(num_episodes):
     # reset our history
@@ -56,12 +56,13 @@ for i in range(num_episodes):
         action, value, log_prob = AC.forward(cart_states * 10.0)
 
         # take the action and get the reward
-        cart_controller.actuate_wheels((action - 10) / 2.0)
+        force = (action - 7)
+        cart_controller.actuate_wheels(force)
         reward = cart_controller.reward()
 
         # add our reward and log prob to our history
         # reward is function of angle and time
-        rewards.append(reward + 1)
+        rewards.append(reward + 3)
         log_probs.append(log_prob)
 
         # control loop rate of the system
@@ -69,8 +70,8 @@ for i in range(num_episodes):
 
         # if the pendulum goes out of bounds, stop, relearn, reset sim
         if(abs(cart_states[4]) > 10
-        or abs(cart_states[0]) > 0.5
-        or abs(cart_states[2]) > 0.5):
+        or abs(cart_states[0]) > 1
+        or abs(cart_states[2]) > 1):
 
             # update policy
             AC.update_policy(log_probs, rewards)
