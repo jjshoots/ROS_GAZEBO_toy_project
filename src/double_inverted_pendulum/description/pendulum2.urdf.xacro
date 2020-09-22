@@ -8,7 +8,7 @@
 
     <!-- #region CONSTANTS -->
     <xacro:property name="boxheight" value="0.1" />
-    <xacro:property name="pendulumlength" value="0.5" />
+    <xacro:property name="pendulumlength" value="0.75" />
     <xacro:property name="pendulummass" value="1" />
     <xacro:property name="pendulumwidth" value="0.05" /> 
     <xacro:property name="pitchlimit" value="0" /> 

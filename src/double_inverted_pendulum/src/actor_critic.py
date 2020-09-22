@@ -23,12 +23,12 @@ class actor_critic(nn.Module):
         self.gamma = gamma
 
         # network definitions
-        self.general_L1 = nn.Linear(6, 32)
+        self.general_L1 = nn.Linear(6, 128)
 
-        self.action_L1 = nn.Linear(32, 64)
-        self.action_L2 = nn.Linear(64, 15)
+        self.action_L1 = nn.Linear(128, 256)
+        self.action_L2 = nn.Linear(256, 3)
 
-        self.value_L1 = nn.Linear(32, 1)
+        self.value_L1 = nn.Linear(128, 1)
         
         # optimizer
         self.optimizer = optim.Adam(self.parameters(), lr=alpha)
@@ -43,17 +43,18 @@ class actor_critic(nn.Module):
 
         # generate action
         action_vector = F.relu(self.action_L1(state_vector))
-        distribution = F.softmax(self.action_L2(action_vector), dim=0)
-        action = Categorical(distribution)
-        action = action.sample()
-
-        # generate predicted score, this is defined as V(s), or Q(s)
-        value = self.value_L1(state_vector)
+        action_vector = self.action_L2(action_vector) 
+        # generate distribution from logits from action vector output
+        distribution = Categorical(logits=action_vector)
+        action = distribution.sample()
 
         # calculate log probability
-        log_prob = torch.log(distribution[action])
+        log_prob = distribution.log_prob(action)
 
-        return action, value, log_prob
+        # generate predicted return, this is defined as V(s), or Q(s)
+        value = self.value_L1(state_vector)
+
+        return action.cpu().numpy(), value, log_prob
 
     # calculate and return reward return for each time step
     def calculate_loss(self, rewards):
@@ -73,24 +74,36 @@ class actor_critic(nn.Module):
         # flip the returns vector back right side up
         np.flipud(returns)
 
-        return torch.tensor(returns)
+        return returns
 
     # update policy
-    def update_policy(self, log_probs, rewards):
+    def update_policy(self, log_probs, rewards, values):
         # calculate the discounted rewards for each time step
         discounted_returns = self.calculate_loss(rewards)
 
-        # normalize discounted returns
-        discounted_returns = (discounted_returns - discounted_returns.mean()) / (discounted_returns.std() + 1e-9)
+        # calculate advantages function
+        discounted_returns = torch.tensor(discounted_returns).to(self.device)
+        values = torch.cat(values)
+        advantages = values - discounted_returns
 
-        # finally calculate our policy gradient
+        # normalize advantage
+        # advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-9)
+
+        # calculate policy gradient
         policy_gradient = []
 
-        for log_prob, discounted_return in zip(log_probs, discounted_returns):
-            policy_gradient.append(-log_prob * discounted_return)
+        for log_prob, advantage in zip(log_probs, advantages):
+            policy_gradient.append(-log_prob * advantage)
 
-        self.optimizer.zero_grad()
         policy_gradient = torch.stack(policy_gradient).sum()
-        policy_gradient.backward()
+
+        # calculate total loss
+        total_loss = policy_gradient + advantages.sum()
+
+        # backprop
+        self.optimizer.zero_grad()
+        total_loss.backward()
         self.optimizer.step()
+
+        return total_loss
 
