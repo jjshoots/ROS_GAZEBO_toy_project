@@ -13,7 +13,7 @@
     <xacro:property name="pendulumwidth" value="0.05" /> 
     <xacro:property name="pitchlimit" value="0" /> 
     <xacro:property name="pendulumdamping" value="0.0" /> 
-    <xacro:property name="pendulumfriction" value="0.10" /> 
+    <xacro:property name="pendulumfriction" value="0.30" /> 
     <xacro:property name="camerasize" value="0.10" /> 
     <!-- #endregion -->
 

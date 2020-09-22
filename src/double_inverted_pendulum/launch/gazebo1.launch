@@ -12,7 +12,7 @@
   <param name="robot_description" command="$(find xacro)/xacro $(find double_inverted_pendulum)/description/pendulum2.urdf.xacro" />
 
   <!-- Spawn a robot into Gazebo -->
-  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model my_robot -x 0 -y 0 -z 0.2"/>
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model my_robot -x 0 -y 0 -z 0.15"/>
 
   <!-- Load joint controller configurations from YAML file to parameter server -->
   <rosparam file="$(find double_inverted_pendulum)/config/pendulum_control.yaml" command="load"/>

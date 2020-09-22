@@ -146,9 +146,9 @@ class cart_controller:
         raw_values = np.absolute(self.__state_vector__)
         scaler = np.array([1, 1, 1, 1, 1, 1])
 
-        return np.dot(raw_values, scaler)
+        return -np.dot(raw_values, scaler)
 
     # reset simulation caller
     def reset_simulation(self):
-        print("Resetting simulation...")
+        # print("Resetting simulation...")
         self.reset()
