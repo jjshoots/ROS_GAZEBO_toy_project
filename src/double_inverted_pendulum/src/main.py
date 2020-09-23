@@ -21,7 +21,7 @@ cart_controller = cart_controller("controller_commander", node_rate=100)
 
 # init DL agent
 
-PATH = 'network.pth'
+PATH = 'network_MK2.pth'
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print('Using ', device)
@@ -69,8 +69,7 @@ for i in range(num_episodes):
         # integrate action as a torque to the wheels
         torque = torque + (action - 1)
         cart_controller.actuate_wheels(torque)
-        reward = cart_controller.reward()
-        # reward = 1
+        reward = cart_controller.reward() + (j / 5)
 
 
         # add our reward and log prob to our history
@@ -93,13 +92,10 @@ for i in range(num_episodes):
             # for data display
             collected_reward = np.sum(rewards)
             print(
-                "Number of iterations: " + str(i)
-                +
-                "; Number of steps: " + str(j)
-                +
-                "; Collected reward: " + str(round(collected_reward, 3))
-                +
-                "; Total return: " + str(round(loss, 3))
+                "Number of iterations:", i,
+                "; Steps walked:", j,
+                "; Collected reward:", round(collected_reward, 3),
+                "; Total loss:",  round(loss, 3)
                 )
 
             # save the network

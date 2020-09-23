@@ -88,12 +88,11 @@ class actor_critic(nn.Module):
         discounted_returns = torch.tensor(discounted_returns).to(self.device)
         advantages = values - discounted_returns
 
-        # normalize advantage
-        # advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-9)
+        # normalize advantage, to have at least 50/50 split of network up and down
+        advantages_normalized = (advantages - advantages.mean()) / (advantages.std() + 1e-9)
 
         # calculate policy gradient
-        # print(log_probs, advantages)
-        policy_gradient = -log_probs * advantages
+        policy_gradient = -log_probs * advantages_normalized
         policy_gradient = policy_gradient.sum()
 
         # calculate total loss
