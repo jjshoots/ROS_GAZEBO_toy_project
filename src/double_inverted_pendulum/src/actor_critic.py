@@ -78,27 +78,26 @@ class actor_critic(nn.Module):
 
     # update policy
     def update_policy(self, log_probs, rewards, values):
+        values = torch.cat(values)
+        log_probs = torch.stack(log_probs)
+
         # calculate the discounted rewards for each time step
         discounted_returns = self.calculate_loss(rewards)
 
         # calculate advantages function
         discounted_returns = torch.tensor(discounted_returns).to(self.device)
-        values = torch.cat(values)
         advantages = values - discounted_returns
 
         # normalize advantage
         # advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-9)
 
         # calculate policy gradient
-        policy_gradient = []
-
-        for log_prob, advantage in zip(log_probs, advantages):
-            policy_gradient.append(-log_prob * advantage)
-
-        policy_gradient = torch.stack(policy_gradient).sum()
+        # print(log_probs, advantages)
+        policy_gradient = -log_probs * advantages
+        policy_gradient = policy_gradient.sum()
 
         # calculate total loss
-        total_loss = policy_gradient + advantages.sum()
+        total_loss = policy_gradient + advantages.pow(2).sum()
 
         # backprop
         self.optimizer.zero_grad()
