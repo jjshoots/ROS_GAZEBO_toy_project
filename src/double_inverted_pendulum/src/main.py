@@ -21,7 +21,7 @@ cart_controller = cart_controller("controller_commander", node_rate=100)
 
 # init DL agent
 
-PATH = 'network_MK2.pth'
+PATH = 'network_MK3.pth'
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print('Using ', device)
