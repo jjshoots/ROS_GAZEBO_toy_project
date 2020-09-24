@@ -20,18 +20,26 @@ from actor_critic import actor_critic
 cart_controller = cart_controller("controller_commander", node_rate=100)
 
 # init DL agent
-
-PATH = 'network_MK3.pth'
-
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print('Using ', device)
 AC = actor_critic(device=device, gamma=0.9, alpha=0.0001).to(device)
 
-if os.path.isfile(PATH):
-    AC.load_state_dict(torch.load(PATH))
+# get the latest pth file and use as weights
+MARK_NUMBER = 1
+PATH = F"src/double_inverted_pendulum/src/network_weights/MK4/network_MK{MARK_NUMBER}.pth"
 
+while os.path.isfile(PATH):
+    MARK_NUMBER += 1
+    PATH = F"src/double_inverted_pendulum/src/network_weights/MK4/network_MK{MARK_NUMBER}.pth"
 
+MARK_NUMBER -= 1
+PATH = F"src/double_inverted_pendulum/src/network_weights/MK4/network_MK{MARK_NUMBER}.pth"
+
+AC.load_state_dict(torch.load(PATH))
+
+# training loop params
 num_episodes = 100000
+highest_step_count = 0
 
 for i in range(num_episodes):
     # reset our history
@@ -69,7 +77,7 @@ for i in range(num_episodes):
         # integrate action as a torque to the wheels
         torque = torque + (action - 1)
         cart_controller.actuate_wheels(torque)
-        reward = cart_controller.reward() + (j / 5)
+        reward = cart_controller.reward() + (j / 10)
 
 
         # add our reward and log prob to our history
@@ -98,7 +106,13 @@ for i in range(num_episodes):
                 "; Total loss:",  round(loss, 3)
                 )
 
+            highest_step_count = (j if (i == 0) else highest_step_count)
+
             # save the network
-            torch.save(AC.state_dict(), PATH)
+            if(j > highest_step_count + 100):
+                highest_step_count = j
+                MARK_NUMBER += 1
+                PATH = F"src/double_inverted_pendulum/src/network_weights/MK4/network_MK{MARK_NUMBER}.pth"
+                torch.save(AC.state_dict(), PATH)
 
             break
