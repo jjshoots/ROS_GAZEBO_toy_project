@@ -25,17 +25,25 @@ print('Using ', device)
 AC = actor_critic(device=device, gamma=0.9, alpha=0.0001).to(device)
 
 # get the latest pth file and use as weights
+NET_NUMBER = 5
 MARK_NUMBER = 1
-PATH = F"src/double_inverted_pendulum/src/network_weights/MK4/network_MK{MARK_NUMBER}.pth"
+PATH = F"src/double_inverted_pendulum/src/network_weights/MK{NET_NUMBER}/network_MK{MARK_NUMBER}.pth"
 
 while os.path.isfile(PATH):
     MARK_NUMBER += 1
-    PATH = F"src/double_inverted_pendulum/src/network_weights/MK4/network_MK{MARK_NUMBER}.pth"
+    PATH = F"src/double_inverted_pendulum/src/network_weights/MK{NET_NUMBER}/network_MK{MARK_NUMBER}.pth"
 
 MARK_NUMBER -= 1
-PATH = F"src/double_inverted_pendulum/src/network_weights/MK4/network_MK{MARK_NUMBER}.pth"
+PATH = F"src/double_inverted_pendulum/src/network_weights/MK{NET_NUMBER}/network_MK{MARK_NUMBER}.pth"
+
+print(F"Using weights file: {PATH}")
 
 AC.load_state_dict(torch.load(PATH))
+
+# decide if we are training or performing
+TRAINING_MODE = False
+if not TRAINING_MODE:
+    torch.no_grad()
 
 # training loop params
 num_episodes = 100000
@@ -75,7 +83,7 @@ for i in range(num_episodes):
 
         # take the action and get the reward
         # integrate action as a torque to the wheels
-        torque = torque + (action - 1)
+        torque = torque + (action - 1) * 1.5
         cart_controller.actuate_wheels(torque)
         reward = cart_controller.reward() + (j / 10)
 
@@ -92,27 +100,30 @@ for i in range(num_episodes):
 
         # if the pendulum goes out of bounds, stop
         if(abs(cart_states[4]) > 10
-        or abs(cart_states[0]) > 1
-        or abs(cart_states[2]) > 1):
-            # update policy
-            loss = AC.update_policy(log_probs, rewards, values).item()
+        or abs(cart_states[0]) > 0.5
+        or abs(cart_states[2]) > 0.5):
+            if TRAINING_MODE:
+                # update policy
+                loss = AC.update_policy(log_probs, rewards, values).item()
 
-            # for data display
-            collected_reward = np.sum(rewards)
-            print(
-                "Number of iterations:", i,
-                "; Steps walked:", j,
-                "; Collected reward:", round(collected_reward, 3),
-                "; Total loss:",  round(loss, 3)
-                )
+                # for data display
+                collected_reward = np.sum(rewards)
+                print(
+                    F"Number of iterations: {i}; "
+                    F"Steps walked: {j}; "
+                    F"Collected reward: {round(collected_reward, 3)}; "
+                    F"Total loss: {round(loss, 3)}; "
+                    F"Current weights file: network_MK{MARK_NUMBER}"
+                    )
 
-            highest_step_count = (j if (i == 0) else highest_step_count)
+                # at the moment, no way to evaluate the current state of training, so we just record the first
+                highest_step_count = (j if (i == 0) else highest_step_count)
 
-            # save the network
-            if(j > highest_step_count + 100):
-                highest_step_count = j
-                MARK_NUMBER += 1
-                PATH = F"src/double_inverted_pendulum/src/network_weights/MK4/network_MK{MARK_NUMBER}.pth"
-                torch.save(AC.state_dict(), PATH)
+                # save the network
+                if(j > highest_step_count + 100):
+                    highest_step_count = j
+                    MARK_NUMBER += 1
+                    PATH = F"src/double_inverted_pendulum/src/network_weights/MK{NET_NUMBER}/network_MK{MARK_NUMBER}.pth"
+                    torch.save(AC.state_dict(), PATH)
 
             break
