@@ -56,7 +56,7 @@ Tested on Ubuntu 20.04 LTS, ROS Noetic, Gazebo 9.
   ## Usage (in main.py)
   1. Cart controller
   ```python
-  from cart_controller import cart_controller
+  from cart_controller import *
   ```
   2. To get available joint state names
   ```python 
@@ -67,7 +67,7 @@ Tested on Ubuntu 20.04 LTS, ROS Noetic, Gazebo 9.
   cart_controller_object.get_joint_state(joint_name)
 
   ```
-  4. Position and velocity date from joint states
+  4. Position and velocity data from joint states
   ```python
   joint_state_data.velocity
   joint_state_date.position
